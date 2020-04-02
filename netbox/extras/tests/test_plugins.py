@@ -11,10 +11,15 @@ from extras.registry import registry
 class PluginTest(TestCase):
 
     def test_config(self):
-
+        """
+        Check that the dummy_plugin app was registered in INSTALLED_APPS.
+        """
         self.assertIn('extras.tests.dummy_plugin.DummyPluginConfig', settings.INSTALLED_APPS)
 
     def test_models(self):
+        """
+        Check that we can create and delete instances of a plugin-provided model.
+        """
         from extras.tests.dummy_plugin.models import DummyModel
 
         # Test saving an instance
@@ -27,13 +32,16 @@ class PluginTest(TestCase):
         self.assertIsNone(instance.pk)
 
     def test_admin(self):
-
-        # Test admin view URL resolution
+        """
+        Validate plugin integration with the Django admin UI.
+        """
         url = reverse('admin:dummy_plugin_dummymodel_add')
         self.assertEqual(url, '/admin/dummy_plugin/dummymodel/add/')
 
     def test_views(self):
-
+        """
+        Validate plugin view registration.
+        """
         # Test URL resolution
         url = reverse('plugins:dummy_plugin:dummy_models')
         self.assertEqual(url, '/plugins/dummy-plugin/models/')
@@ -45,7 +53,9 @@ class PluginTest(TestCase):
 
     @override_settings(EXEMPT_VIEW_PERMISSIONS=['*'])
     def test_api_views(self):
-
+        """
+        Validate plugin API endpoint registration.
+        """
         # Test URL resolution
         url = reverse('plugins-api:dummy_plugin-api:dummymodel-list')
         self.assertEqual(url, '/api/plugins/dummy-plugin/dummy-models/')
